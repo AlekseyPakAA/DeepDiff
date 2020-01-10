@@ -9,8 +9,36 @@
 #if os(iOS) || os(tvOS)
 import UIKit
 
-public extension UICollectionView {
-  
+typealias CollectionView = UICollectionView
+
+#elseif os(macOS)
+import Cocoa
+
+typealias CollectionView = NSCollectionView
+
+extension CollectionView {
+    func performBatchUpdates(_ updates: (() -> Void)?,
+                             completion: ((Bool) -> Void)? = nil) {
+        performBatchUpdates(updates, completionHandler: completion)
+    }
+
+    func deleteItems(at indexPaths: [IndexPath]) {
+        self.deleteItems(at: Set<IndexPath>(indexPaths))
+    }
+
+    func insertItems(at indexPaths: [IndexPath]) {
+        self.insertItems(at: Set<IndexPath>(indexPaths))
+    }
+
+    func reloadItems(at indexPaths: [IndexPath]) {
+        self.reloadItems(at: Set<IndexPath>(indexPaths))
+    }
+}
+
+#endif
+
+public extension CollectionView {
+
   /// Animate reload in a batch update
   ///
   /// - Parameters:
@@ -21,14 +49,14 @@ public extension UICollectionView {
   func reload<T: DiffAware>(
     changes: [Change<T>],
     section: Int = 0,
-    updateData: () -> Void,
+    updateData: @escaping () -> Void,
     completion: ((Bool) -> Void)? = nil) {
     
     let changesWithIndexPath = IndexPathConverter().convert(changes: changes, section: section)
     
     performBatchUpdates({
       updateData()
-      insideUpdate(changesWithIndexPath: changesWithIndexPath)
+      self.insideUpdate(changesWithIndexPath: changesWithIndexPath)
     }, completion: { finished in
       completion?(finished)
     })
@@ -43,7 +71,7 @@ public extension UICollectionView {
     changesWithIndexPath.deletes.executeIfPresent {
       deleteItems(at: $0)
     }
-    
+
     changesWithIndexPath.inserts.executeIfPresent {
       insertItems(at: $0)
     }
@@ -61,4 +89,3 @@ public extension UICollectionView {
     }
   }
 }
-#endif

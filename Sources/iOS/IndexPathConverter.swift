@@ -6,7 +6,7 @@
 //  Copyright © 2018 Khoa Pham. All rights reserved.
 //
 
-#if os(iOS) || os(tvOS)
+#if os(iOS) || os(tvOS) || os(macOS)
 import Foundation
 
 public struct ChangeWithIndexPath {
