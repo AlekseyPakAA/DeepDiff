@@ -23,15 +23,15 @@ extension CollectionView {
     }
 
     func deleteItems(at indexPaths: [IndexPath]) {
-        self.deleteItems(at: Set<IndexPath>(indexPaths))
+        self.animator().deleteItems(at: Set<IndexPath>(indexPaths))
     }
 
     func insertItems(at indexPaths: [IndexPath]) {
-        self.insertItems(at: Set<IndexPath>(indexPaths))
+        self.animator().insertItems(at: Set<IndexPath>(indexPaths))
     }
 
     func reloadItems(at indexPaths: [IndexPath]) {
-        self.reloadItems(at: Set<IndexPath>(indexPaths))
+        self.animator().reloadItems(at: Set<IndexPath>(indexPaths))
     }
 }
 
